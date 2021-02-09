@@ -6,7 +6,8 @@ class Produto(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     nome = db.Column(db.String(50),unique=True,nullable=False)
     preço = db.Column(db.Float)
-    estoque = db.Column(db.Integer,unique=True)
+    estoque = db.Column(db.Integer)
+    
 
 
     def json(self):
