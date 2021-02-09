@@ -3,6 +3,7 @@ from .config import Config
 from .extensions import db, migrate
 
 from app.produtos.controllers import produto_api
+from app.users.controllers import user_api
 
 def create_app():
     app = Flask(__name__)
@@ -12,5 +13,6 @@ def create_app():
     migrate.init_app(app,db)
 
     app.register_blueprint(produto_api) #registra a rota
+    app.register_blueprint(user_api)
 
     return app

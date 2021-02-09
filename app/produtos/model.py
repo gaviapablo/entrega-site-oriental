@@ -9,12 +9,11 @@ class Produto(db.Model):
     estoque = db.Column(db.Integer)
     
 
-
     def json(self):
         return {
             "nome" : self.nome, 
             "preço" : self.preço,
-            "estoque" : self.estoque,
+            "estoque" : self.estoque
         }
 
     

@@ -7,7 +7,7 @@ produto_api = Blueprint('produto_api',__name__)
 @produto_api.route('/produtos',methods=['POST','GET'])
 def index():
     if request.method == 'GET':
-        produtos = Produto.query.all() #pega todos os alunos de uma vez
+        produtos = Produto.query.all() #pega todos os produtos de uma vez
         return jsonify([produto.json() for produto in produtos]),200
 
     if request.method == 'POST':
