@@ -14,23 +14,30 @@ def index():
         
         dados = request.json #pega apenas o corpo da requisição, ou seja, o json, para poder fazer um POST desses dados
 
+        nome = dados.get('nome')
         email = dados.get('email') #pega o nome que esta no formato json
         senha = dados.get('senha')
         
 
-        if email is None or senha is None:
-            return {"error": "Email e senha obrigatórios!"},400
+        if email is None or senha is None or nome is None:
+            return {"error": "Email, nome e senha obrigatórios!"},400
 
         if User.query.filter_by(email=email).first():
             return {"error": "Já existe um usuário cadastrado com este email!"},400
 
         if len(email)>40:
             return {"error": "String de email excede o tamanho de 40 caracteres!"},400
+        
+        if len(nome)>50:
+            return {"error": "String de nome excede o tamanho de 50 caracteres!"},400
 
-        if not isinstance(email,str) or not isinstance(senha,str):
+        if len(senha)>50:
+            return {"error": "String de senha excede o tamanho de 50 caracteres!"},400
+
+        if not isinstance(email,str) or not isinstance(senha,str) or not isinstance(nome,str):
             return {"error": "Algum tipo inserido é inválido!"},400
 
-        user = User(email=email,senha=senha)
+        user = User(nome=nome,email=email,senha=senha)
 
         db.session.add(user)
         db.session.commit()
@@ -46,6 +53,7 @@ def detalhes_users(id):
     if request.method == 'PATCH':
         dados = request.json
 
+        nome = dados.get('nome',user.nome)
         email = dados.get('email',user.email)    #caso nada seja inputado para atualizar as informações de nome, o nome permanece o mesmo, ou seja, aluno.nome
         senha = dados.get('senha',user.senha)
 
@@ -56,10 +64,17 @@ def detalhes_users(id):
         
         if len(email)>40:
             return {"error": "String de email excede o tamanho de 40 caracteres!"},400
+        
+        if len(nome)>50:
+            return {"error": "String de nome excede o tamanho de 50 caracteres!"},400
 
-        if not isinstance(email,str) or not isinstance(senha,str):
+        if len(senha)>50:
+            return {"error": "String de senha excede o tamanho de 50 caracteres!"},400
+
+        if not isinstance(email,str) or not isinstance(senha,str) or not isinstance(nome,str):
             return {"error": "Algum tipo inserido é inválido!"},400
         
+        user.nome = nome
         user.email = email
         user.senha = senha
 
