@@ -7,13 +7,17 @@ class Produto(db.Model):
     nome = db.Column(db.String(50),unique=True,nullable=False)
     preço = db.Column(db.Float)
     estoque = db.Column(db.Integer)
+    descrição = db.Column(db.Text,nullable=False)
+
+    compra_id = db.Column(db.Integer, db.ForeignKey('compra.id'))
     
 
     def json(self):
         return {
             "nome" : self.nome, 
             "preço" : self.preço,
-            "estoque" : self.estoque
+            "estoque" : self.estoque,
+            "descrição": self.descrição
         }
 
     

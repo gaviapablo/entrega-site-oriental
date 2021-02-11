@@ -1,68 +1,34 @@
-from flask import request, jsonify, render_template
-from app.users.model import User
-from app.extensions import db,mail
-from flask_mail import Message
-import bcrypt
+from flask import request, jsonify
+from app.compras.model import Compra
+from app.extensions import db
 from flask.views import MethodView
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 
-class UserDetails(MethodView):
+class ComprasDetails(MethodView):
     def get(self):
-        users = User.query.all() #pega todos os users de uma vez
-        return jsonify([user.json() for user in users]),200
+        compras = Compra.query.all() #pega todos os users de uma vez
+        return jsonify([compra.json() for compra in compras]),200
     
     def post(self):
         dados = request.json #pega apenas o corpo da requisição, ou seja, o json, para poder fazer um POST desses dados
 
-        nome = dados.get('nome')
-        email = dados.get('email') #pega o nome que esta no formato json
-        password = dados.get('password')
-        estado = dados.get('estado')
-        cidade = dados.get('cidade')
-        cep = dados.get('cep')
-        endereço = dados.get('endereço')
-        bloco_apartamento = dados.get('bloco_apartamento')
+        produtos = dados.get('produtos')
+        preço = dados.get('preço') #pega o nome que esta no formato json
+        user_id = dados.get('user_id')
         
+        if not produtos or not preço or not user_id:
+            return {"error": "Produtos, preço e usuário obrigatórios!"},400
 
-        if not email or not password or not nome or not estado or not cidade or not cep or not endereço or not bloco_apartamento:
-            return {"error": "Email, nome, senha e dados de endereço obrigatórios!"},400
-
-        if User.query.filter_by(email=email).first():
-            return {"error": "Já existe um usuário cadastrado com este email!"},400
-
-        if len(email)>40:
-            return {"error": "String de email excede o tamanho de 40 caracteres!"},400
-        
-        if len(nome)>50:
-            return {"error": "String de nome excede o tamanho de 50 caracteres!"},400
-        
-        if len(estado)>20:
-            return {"error": "String de estado excede o tamanho de 20 caracteres!"},400
-
-        if len(password)>200:
-            return {"error": "String de senha excede o tamanho de 50 caracteres!"},400
-
-        if not isinstance(email,str) or not isinstance(password,str) or not isinstance(nome,str) or not isinstance(estado,str) or not isinstance(cidade,str) or not isinstance(cep,int) or not isinstance(endereço,str) or not isinstance(bloco_apartamento,str):
+        if not isinstance(produtos,list) or not isinstance(preço,int):
             return {"error": "Algum tipo inserido é inválido!"},400
-        
-        password_hash = bcrypt.hashpw(password.encode(),bcrypt.gensalt())
 
-        user = User(nome=nome,email=email,password_hash=password_hash,estado=estado,cidade=cidade,cep=cep,endereço=endereço,bloco_apartamento=bloco_apartamento)
+        compra = Compra(produtos=produtos,preço=preço,user_id=user_id)
 
-        db.session.add(user)
+        db.session.add(compra)
         db.session.commit()
 
-        msg = Message(
-            sender='gaviapablo@hotmail.com',
-            recipients=[email],
-            subject='Obrigado pelo Cadastro - Naomi', 
-            html = render_template('email1.html',nome=nome) #por configuração esse render_template já busca pelo folder templates
-        )
-
-        mail.send(msg)
-
-        return user.json(),200
+        return compra.json(),200
 
 
 class PaginaUser(MethodView):
