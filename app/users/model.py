@@ -1,3 +1,4 @@
+from sqlalchemy.orm import backref
 from ..extensions import db
 
 
@@ -13,7 +14,7 @@ class User(db.Model):
     endereço = db.Column(db.Text,nullable=False)
     bloco_apartamento = db.Column(db.Text,nullable=False)
 
-    compras = db.relationship('Compra')
+    compras = db.relationship('Compra',backref='user')
 
 
     def json(self):
