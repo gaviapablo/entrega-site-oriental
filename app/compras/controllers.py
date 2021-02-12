@@ -23,7 +23,7 @@ class ComprasDetails(MethodView):
         
         for produto_id in dados.get('produtos'):
 
-            produtos.append(Produto(id=produto_id)) # LINHA DE CÓDIGO QUE DEVE SER REVISADA
+            produtos.append(produto_id) # LINHA DE CÓDIGO QUE DEVE SER REVISADA
 
         preço = dados.get('preço') #pega o nome que esta no formato json
         user = get_jwt_identity() #a compra recebe o id do usuario logado
