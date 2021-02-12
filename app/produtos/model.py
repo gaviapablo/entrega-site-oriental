@@ -8,8 +8,6 @@ class Produto(db.Model):
     preço = db.Column(db.Float)
     estoque = db.Column(db.Integer)
     descrição = db.Column(db.Text,nullable=False)
-
-    compra_id = db.Column(db.Integer, db.ForeignKey('compra.id'))
     
 
     def json(self):
