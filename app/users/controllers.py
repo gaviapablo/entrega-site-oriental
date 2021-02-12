@@ -152,12 +152,20 @@ class UserLogin(MethodView):
         email = dados.get('email') #pega o nome que esta no formato json
         password = dados.get('password')
 
+        if email is None or password is None:
+            return  {"error": "Email e senha são necessários!"},400
+
         user = User.query.filter_by(email=email).first()
 
-        if user is None or not bcrypt.checkpw(password.encode(),user.password_hash):
-            return {"error": "Usuário ou senha incorretos!"},400
+        if user is None:
+            return {"error": "Usuário ou senha são necessários!"},400
+        
+        if not bcrypt.checkpw(password.encode(),user.password_hash):
+            return {"error": "Senha incorreta!"}
 
-        token = create_access_token(identity=user.id)
+        token = create_access_token(identity=user.id,expires_delta=False)
 
         return {"token":token},200
+
+ 
 

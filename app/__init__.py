@@ -4,6 +4,7 @@ from .extensions import db, migrate, mail, jwt
 
 from app.produtos.routes import produto_api
 from app.users.routes import user_api
+from app.compras.routes import compra_api
 
 def create_app():
     app = Flask(__name__)
@@ -16,5 +17,6 @@ def create_app():
 
     app.register_blueprint(produto_api) #registra a rota
     app.register_blueprint(user_api)
+    app.register_blueprint(compra_api)
 
     return app
